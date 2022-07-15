@@ -1,3 +1,4 @@
+from tkinter import N
 from typing import Tuple
 import pytorch_lightning as pl
 import torch
@@ -11,7 +12,7 @@ class ConfGATLayer(BaseModel):
     Args:
         in_features (int): number of input features
         out_features (int): number of output features
-        n_heads (int): number of heads
+        n_head (int): number of heads
         dropout (float): dropout probability
         alpha (float): the negative slope of the leaky relu
         concat (bool): whether to concatenate the output of different heads
@@ -135,16 +136,16 @@ class GATLayer(pl.LightningModule):
         h : torch.Tensor
             The hidden state of the previous layer.
         adj : torch.Tensor
-            The adjacency matrix must with shape (N, N, n_heads) or (N, N, 1).
+            The adjacency matrix must with shape (N, N, n_head) or (N, N, 1).
         """
         # The number of nodes.
         N = h.shape[0]
 
         # The adjacency matrix should have shape
-        # [n_nodes, n_nodes, n_heads] or [n_nodes, n_nodes, 1]
+        # [n_nodes, n_nodes, n_head] or [n_nodes, n_nodes, 1]
         assert adj.shape[0] == 1 or adj.shape[0] == N
         assert adj.shape[1] == 1 or adj.shape[1] == N
-        assert adj.shape[2] == 1 or adj.shape[2] == self.c.n_heads
+        assert adj.shape[2] == 1 or adj.shape[2] == self.c.n_head
 
         # emb = [N, n_head, n_hidden] (where n_hidden = out_features // n_head)
         # e (attn score) = [N, N, out_features, 1]
